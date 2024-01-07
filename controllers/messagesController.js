@@ -22,7 +22,10 @@ module.exports.getAllMessages = async (req, res, next) => {
     console.log(from, to);
     const messages = await messageModel
       .find({
-        $and: [{ "users.from": from }, { "users.to": to }],
+        $or: [
+          { $and: [{ "users.from": from }, { "users.to": to }] },
+          { $and: [{ "users.from": to }, { "users.to": from }] },
+        ],
       })
       .sort({ updatedAt: 1 });
     console.log("MESSAGES", messages, "MESSAGES");
